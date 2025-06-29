@@ -3,21 +3,21 @@ const { google } = require('googleapis');
 const cors = require('cors');
 const sanitizeHtml = require('sanitize-html');
 const app = express();
-const port = 3000;
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-const sheets = google.sheets('v4');
-const auth = new google.auth.GoogleAuth({
-    keyFile: 'glossier-service-account-key.json',
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-});
+// Google Sheets configuration
 const spreadsheetId = '1L6hYMNd6jyWfR5FGAC8hWmJ78B_4jLtXATwqInHzE4c';
 
 async function initializeClient() {
     try {
+        const auth = new google.auth.GoogleAuth({
+            credentials: process.env.GOOGLE_SERVICE_KEY ? JSON.parse(process.env.GOOGLE_SERVICE_KEY) : require('./glossier-service-account-key.json'),
+            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+        });
         const client = await auth.getClient();
         console.log('Authentication successful');
         return client;
@@ -27,9 +27,15 @@ async function initializeClient() {
     }
 }
 
+const sheets = google.sheets({
+    version: 'v4',
+    auth: initializeClient(), // This will be overridden in each route
+});
+
 app.get('/api/products', async (req, res) => {
     try {
         const client = await initializeClient();
+        const sheets = google.sheets({ version: 'v4', auth: client });
         const response = await sheets.spreadsheets.values.get({
             auth: client,
             spreadsheetId,
@@ -60,6 +66,7 @@ app.get('/api/products', async (req, res) => {
 app.get('/api/products/:category', async (req, res) => {
     try {
         const client = await initializeClient();
+        const sheets = google.sheets({ version: 'v4', auth: client });
         const category = sanitizeHtml(req.params.category);
         const response = await sheets.spreadsheets.values.get({
             auth: client,
@@ -86,6 +93,7 @@ app.get('/api/products/:category', async (req, res) => {
 app.post('/api/products', async (req, res) => {
     try {
         const client = await initializeClient();
+        const sheets = google.sheets({ version: 'v4', auth: client });
         const { name, description, price, image, category, inStock } = req.body;
         if (!name || !description || !price || !image || !category || inStock === undefined) {
             return res.status(400).json({ success: false, error: 'All fields are required' });
@@ -127,6 +135,7 @@ app.post('/api/products', async (req, res) => {
 app.put('/api/products/:id', async (req, res) => {
     try {
         const client = await initializeClient();
+        const sheets = google.sheets({ version: 'v4', auth: client });
         const id = parseInt(req.params.id);
         const { name, description, price, image, category, inStock } = req.body;
         if (!name || !description || !price || !image || !category || inStock === undefined) {
@@ -179,6 +188,7 @@ app.put('/api/products/:id', async (req, res) => {
 app.delete('/api/products/:id', async (req, res) => {
     try {
         const client = await initializeClient();
+        const sheets = google.sheets({ version: 'v4', auth: client });
         const id = parseInt(req.params.id);
         const response = await sheets.spreadsheets.values.get({
             auth: client,
@@ -203,6 +213,5 @@ app.delete('/api/products/:id', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
+// Export for Vercel
+module.exports = app;
