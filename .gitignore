@@ -9,3 +9,4 @@ public/css/output.css
 *.swo
 *.DS_Store
 .vercel/
+.vercel
