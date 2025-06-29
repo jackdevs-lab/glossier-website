@@ -1,0 +1,170 @@
+/* Custom styles to complement Tailwind */
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Smooth transitions */
+.transition {
+    transition: all 0.3s ease;
+}
+
+/* Product card hover effect */
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Modal animation */
+@keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+#cart-modal[data-open="true"] > div {
+    animation: slideIn 0.3s ease-out;
+}
+/* Mobile-first base styles */
+#menu {
+    display: none; /* Hidden by default, toggled by JavaScript */
+}
+
+#menu-toggle {
+    padding: 0.5rem;
+    font-size: 1.5rem;
+}
+
+#menu.active {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.product-card img {
+    object-fit: cover; /* Ensure image fits well within container */
+}
+
+/* Media query for tablet and up (md breakpoint, ~768px) */
+@media (min-width: 768px) {
+    #menu {
+        display: flex;
+        flex-direction: row;
+    }
+
+    #menu-toggle {
+        display: none; /* Hide toggle on desktop */
+    }
+
+    .hero-section img {
+        max-width: 28rem; /* Larger image on desktop */
+    }
+}
+
+/* Media query for desktop and up (lg breakpoint, ~1024px) */
+@media (min-width: 1024px) {
+    .hero-section img {
+        max-width: 32rem; /* Even larger on large screens */
+    }
+}
+/* Ensure smooth transitions for modals */
+#cart-modal,
+#nav-panel {
+    transition: opacity 0.3s ease-in-out;
+}
+
+#cart-modal .absolute,
+#nav-panel .absolute {
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Open state adjustments */
+#cart-modal[data-open="true"] .absolute {
+    transform: translateX(0);
+}
+
+#cart-modal[data-open="false"] .absolute {
+    transform: translateX(100%);
+}
+
+#nav-panel[data-open="true"] .absolute {
+    transform: translateX(0);
+}
+
+#nav-panel[data-open="false"] .absolute {
+    transform: -translateX(100%);
+}
+
+/* Styling refinements */
+#nav-panel .absolute,
+#cart-modal .absolute {
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#nav-items a {
+    font-size: 1.125rem;
+    transition: color 0.2s ease;
+}
+
+#nav-items a:hover {
+    color: #8B5E3C;
+}
+
+#nav-sentence {
+    font-size: 1.125rem;
+    line-height: 1.5;
+    padding-top: 1rem;
+    border-top: 1px solid #5C4033;
+    border-top-opacity: 0.2;
+}
+
+/* Ensure z-index hierarchy */
+#nav-panel {
+    z-index: 60;
+}
+
+#cart-modal {
+    z-index: 50;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+    #nav-panel .absolute,
+    #cart-modal .absolute {
+        width: 100%;
+    }
+}
+
+@media (min-width: 768px) {
+    #nav-panel .absolute,
+    #cart-modal .absolute {
+        width: 33.333333%;
+    }
+}
+/* Ensure product card images scale properly */
+.product-card img {
+    width: 100%;
+    height: auto; /* Allows the image to maintain its aspect ratio */
+    max-height: 192px; /* Matches max-h-48 in Tailwind */
+    object-fit: contain; /* Ensures the full image is visible */
+    display: block; /* Removes any inline spacing issues */
+}
+
+/* Ensure the card adjusts to the image height */
+.product-card {
+    min-height: 0; /* Prevents unwanted stretching */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Optional: Center the image vertically if needed */
+.product-card .mb-4 {
+    margin-bottom: 1rem;
+    flex-grow: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+    .product-card img {
+        max-height: 150px; /* Slightly smaller max height on mobile for better fit */
+    }
+}

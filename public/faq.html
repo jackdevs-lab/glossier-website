@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luné Seduire | FAQ</title>
+    <meta name="description" content="Frequently Asked Questions about Glossier's cosmetic products and services.">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="/css/output.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <style>
+        .faq-answer {
+            display: none;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+        }
+        .faq-answer.active {
+            display: block;
+            opacity: 1;
+            max-height: 200px; /* Adjust based on content size */
+            padding-top: 8px;
+        }
+        .faq-question {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-question i {
+            transition: transform 0.3s ease;
+        }
+        .faq-question.active i {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-[#F9D2C7] min-h-screen">
+    <!-- Header -->
+     <header class="py-6 px-4 md:px-8 lg:px-12">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-[#5C4033] font-regular text-2xl"> Luné Seduire </a>
+            
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex space-x-8">
+                <a href="/skincare.html" class="text-[#5C4033] hover:underline">Skincare</a>
+                <a href="/handbags.html" class="text-[#5C4033] hover:underline">Handbags</a>
+                <a href="/makeup.html" class="text-[#5C4033] hover:underline">Make up</a>
+                <a href="/wigs.html" class="text-[#5C4033] hover:underline">Wigs</a>
+                <a href="/perfumes.html" class="text-[#5C4033] hover:underline">Perfumes</a>
+                <a href="/lingeries.html" class="text-[#5C4033] hover:underline">Lingeries</a>
+            </nav>
+
+            <!-- Mobile Menu (optional) -->
+            <div id="mobile-menu" class="hidden md:hidden absolute top-16 right-4 bg-white p-4 rounded-lg shadow-lg flex-col space-y-2 z-50">
+                <a href="/skincare.html" class="text-[#5C4033] hover:underline">Skincare</a>
+                <a href="/handbags.html" class="text-[#5C4033] hover:underline">Handbags</a>
+                <a href="/makeup.html" class="text-[#5C4033] hover:underline">Make up</a>
+                <a href="/wigs.html" class="text-[#5C4033] hover:underline">Wigs</a>
+                <a href="/perfumes.html" class="text-[#5C4033] hover:underline">Perfumes</a>
+                <a href="/lingeries.html" class="text-[#5C4033] hover:underline">Lingeries</a>
+            </div>
+
+            <!-- Cart and Search Icons -->
+            <div class="flex items-center space-x-4">
+                <div class="text-[#5C4033] cursor-pointer">KE</div>
+                <i class="fas fa-search text-[#5C4033] text-xl cursor-pointer" id="nav-trigger"></i>
+                <div class="relative cursor-pointer" id="cart-icon">
+                    <i class="fas fa-crown text-[#5C4033]"></i>
+                    <span class="absolute -top-2 -right-2 bg-[#5C4033] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="cart-count">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- FAQ Section -->
+    <section class="container mx-auto px-4 md:px-8 lg:px-12 py-8 md:py-12">
+        <div class="flex flex-col items-center">
+            <h1 class="text-[#5C4033] text-3xl md:text-4xl lg:text-5xl font-regular mb-6">
+                Frequently Asked Questions
+            </h1>
+            <div class="w-full md:w-2/3">
+                <div class="mb-6">
+                    <h2 class="text-[#5C4033] text-xl md:text-2xl font-semibold mb-2 faq-question">
+                        Delivery
+                        <i class="fas fa-chevron-down text-[#5C4033]"></i>
+                    </h2>
+                    <p class="text-[#5C4033] text-lg md:text-xl faq-answer">
+                        Delivery is free within Mombasa. For other areas, delivery charges will be negotiated based on your location. Please contact us for more details.
+                    </p>
+                </div>
+                <div class="mb-6">
+                    <h2 class="text-[#5C4033] text-xl md:text-2xl font-semibold mb-2 faq-question">
+                        Refund Policy
+                        <i class="fas fa-chevron-down text-[#5C4033]"></i>
+                    </h2>
+                    <p class="text-[#5C4033] text-lg md:text-xl faq-answer">
+                        Undamaged items can be returned for a refund within 1 hour after delivery. Please ensure items are in their original packaging and condition. Contact us immediately to initiate a return.
+                    </p>
+                </div>
+                <div class="mb-6">
+                    <h2 class="text-[#5C4033] text-xl md:text-2xl font-semibold mb-2 faq-question">
+                        Payment Methods
+                        <i class="fas fa-chevron-down text-[#5C4033]"></i>
+                    </h2>
+                    <p class="text-[#5C4033] text-lg md:text-xl faq-answer">
+                        We accept M-Pesa, bank cards, and cash on delivery. Choose your preferred method at checkout for a seamless shopping experience.
+                    </p>
+                </div>
+                <div class="mb-6">
+                    <h2 class="text-[#5C4033] text-xl md:text-2xl font-semibold mb-2 faq-question">
+                        Product Availability
+                        <i class="fas fa-chevron-down text-[#5C4033]"></i>
+                    </h2>
+                    <p class="text-[#5C4033] text-lg md:text-xl faq-answer">
+                        Our inventory is updated regularly. If a product is out of stock, we’ll notify you and suggest alternatives or inform you when it’s back in stock.
+                    </p>
+                </div>
+                <div class="mb-6">
+                    <h2 class="text-[#5C4033] text-xl md:text-2xl font-semibold mb-2 faq-question">
+                        Customer Support
+                        <i class="fas fa-chevron-down text-[#5C4033]"></i>
+                    </h2>
+                    <p class="text-[#5C4033] text-lg md:text-xl faq-answer">
+                        Our team is available via email at support@lunéseduire.com or phone at +254 712 345 678 from 9 AM to 5 PM EAT, Monday to Saturday.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-6 px-4 md:px-8 lg:px-12 border-t border-[#5C4033] border-opacity-20 mt-8">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="flex space-x-6 mb-4 md:mb-0">
+                <a href="about_us.html" class="text-[#5C4033] hover:underline">About Us</a>
+                <a href="contact.html" class="text-[#5C4033] hover:underline">Contact</a>
+                <a href="faq.html" class="text-[#5C4033] hover:underline">FAQ</a>
+            </div>
+            <div class="text-[#5C4033] text-sm">
+                Luné Seduire Goods
+            </div>
+        </div>
+    </footer>
+
+     <div id="cart-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden transition-all duration-300">
+        <div class="absolute right-0 top-0 h-full w-full md:w-1/3 bg-[#F9D2C7] p-6 overflow-y-auto shadow-lg rounded-l-lg transform transition-transform duration-300 translate-x-full md:translate-x-0">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-[#5C4033] text-2xl font-bold">Your Cart</h2>
+                <button id="close-cart" class="text-[#5C4033] text-2xl">×</button>
+            </div>
+            <div id="cart-items" class="mb-6">
+                <!-- Cart items will be dynamically inserted here -->
+            </div>
+            <div class="border-t border-[#5C4033] border-opacity-20 pt-4 mb-6">
+                <div class="flex justify-between text-[#5C4033] font-bold text-lg">
+                    <span>Total:</span>
+                    <span id="cart-total">KES 0</span>
+                </div>
+            </div>
+            <button id="checkout-btn" class="w-full bg-[#5C4033] text-white py-3 rounded-full hover:scale-105 transition-transform">
+                Checkout
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation Panel -->
+    <div id="nav-panel" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden transition-all duration-300">
+        <div class="absolute left-0 top-0 h-full w-full md:w-1/3 bg-[#F9D2C7] p-6 overflow-y-auto shadow-lg rounded-r-lg transform transition-transform duration-300 -translate-x-full md:-translate-x-0">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-[#5C4033] text-2xl font-bold">Menu</h2>
+                <button id="close-nav" class="text-[#5C4033] text-2xl">×</button>
+            </div>
+            <div id="nav-items" class="mb-6">
+                <a href="/skincare.html" class="block text-[#5C4033] hover:underline py-2 font-medium">Skincare</a><br><br>
+                <a href="/handbags.html" class="block text-[#5C4033] hover:underline py-2 font-medium">Handbags</a><br><br>
+                <a href="/makeup.html" class="block text-[#5C4033] hover:underline py-2 font-medium">Make up</a><br><br>
+                <a href="/wigs.html" class="block text-[#5C4033] hover:underline py-2 font-medium">Wigs</a><br><br>
+                <a href="/perfumes.html" class="block text-[#5C4033] hover:underline py-2 font-medium">Perfumes</a><br><br>
+                <a href="/lingeries.html" class="block text-[#5C4033] hover:underline py-2 font-medium">Lingeries</a><br><br>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="/js/products.js"></script>
+    <script src="/js/cart.js"></script>
+    <script src="/js/main.js" defer></script>
+</body>
+</html>

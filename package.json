@@ -1,0 +1,23 @@
+{
+  "name": "glossier-website",
+  "version": "1.0.0",
+  "description": "Glossier-inspired cosmetics e-commerce website",
+  "scripts": {
+    "build-css": "tailwindcss -i ./src/input.css -o ./css/output.css",
+    "watch-css": "tailwindcss -i ./src/input.css -o ./css/output.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  },
+  "main": "tailwind.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "googleapis": "^150.0.1",
+    "sanitize-html": "^2.17.0"
+  }
+}
