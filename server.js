@@ -27,9 +27,14 @@ async function initializeClient() {
     }
 }
 
-const sheets = google.sheets({
+/*const sheets = google.sheets({
     version: 'v4',
     auth: initializeClient(), // This will be overridden in each route
+});*/
+console.log('Server starting...');
+app.use((req, res, next) => {
+  console.log(`Request: ${req.method} ${req.url}`);
+  next();
 });
 
 app.get('/api/products', async (req, res) => {
