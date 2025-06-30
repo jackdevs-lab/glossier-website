@@ -15,7 +15,7 @@ const spreadsheetId = '1L6hYMNd6jyWfR5FGAC8hWmJ78B_4jLtXATwqInHzE4c';
 async function initializeClient() {
     try {
         const auth = new google.auth.GoogleAuth({
-            credentials: process.env.GOOGLE_SERVICE_KEY ? JSON.parse(process.env.GOOGLE_SERVICE_KEY) : require('./glossier-service-account-key.json'),
+            keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
             scopes: ['https://www.googleapis.com/auth/spreadsheets'],
         });
         const client = await auth.getClient();
@@ -27,14 +27,10 @@ async function initializeClient() {
     }
 }
 
-/*const sheets = google.sheets({
-    version: 'v4',
-    auth: initializeClient(), // This will be overridden in each route
-});*/
 console.log('Server starting...');
 app.use((req, res, next) => {
-  console.log(`Request: ${req.method} ${req.url}`);
-  next();
+    console.log(`Request: ${req.method} ${req.url}`);
+    next();
 });
 
 app.get('/api/products', async (req, res) => {
@@ -42,7 +38,6 @@ app.get('/api/products', async (req, res) => {
         const client = await initializeClient();
         const sheets = google.sheets({ version: 'v4', auth: client });
         const response = await sheets.spreadsheets.values.get({
-            auth: client,
             spreadsheetId,
             range: 'Sheet1!A:G',
         });
@@ -52,7 +47,7 @@ app.get('/api/products', async (req, res) => {
             return res.json([]);
         }
         const products = rows.slice(1).map(row => ({
-            id: parseInt(row[0]) || Date.now(), // Fallback ID
+            id: parseInt(row[0]) || Date.now(),
             name: row[1] || 'Unnamed',
             description: row[2] || '',
             price: parseInt(row[3]) || 0,
@@ -74,7 +69,6 @@ app.get('/api/products/:category', async (req, res) => {
         const sheets = google.sheets({ version: 'v4', auth: client });
         const category = sanitizeHtml(req.params.category);
         const response = await sheets.spreadsheets.values.get({
-            auth: client,
             spreadsheetId,
             range: 'Sheet1!A:G',
         });
@@ -110,10 +104,9 @@ app.post('/api/products', async (req, res) => {
             price: parseInt(sanitizeHtml(price.toString())),
             image: sanitizeHtml(image),
             category: sanitizeHtml(category),
-            inStock: sanitizeHtml(inStock) === 'true',
+            inStock: sanitizeHtml(inStock.toString()) === 'true',
         };
         await sheets.spreadsheets.values.append({
-            auth: client,
             spreadsheetId,
             range: 'Sheet1!A:G',
             valueInputOption: 'RAW',
@@ -152,10 +145,9 @@ app.put('/api/products/:id', async (req, res) => {
             price: parseInt(sanitizeHtml(price.toString())),
             image: sanitizeHtml(image),
             category: sanitizeHtml(category),
-            inStock: sanitizeHtml(inStock) === 'true',
+            inStock: sanitizeHtml(inStock.toString()) === 'true',
         };
         const response = await sheets.spreadsheets.values.get({
-            auth: client,
             spreadsheetId,
             range: 'Sheet1!A:G',
         });
@@ -163,9 +155,8 @@ app.put('/api/products/:id', async (req, res) => {
         const rowIndex = rows.findIndex(row => parseInt(row[0]) === id);
         if (rowIndex > 0) {
             await sheets.spreadsheets.values.update({
-                auth: client,
                 spreadsheetId,
-                range: `Sheet1!A${rowIndex + 2}:G${rowIndex + 2}`,
+                range: `Sheet1!A${rowIndex + 1}:G${rowIndex + 1}`,
                 valueInputOption: 'RAW',
                 resource: {
                     values: [[
@@ -196,7 +187,6 @@ app.delete('/api/products/:id', async (req, res) => {
         const sheets = google.sheets({ version: 'v4', auth: client });
         const id = parseInt(req.params.id);
         const response = await sheets.spreadsheets.values.get({
-            auth: client,
             spreadsheetId,
             range: 'Sheet1!A:G',
         });
@@ -204,9 +194,8 @@ app.delete('/api/products/:id', async (req, res) => {
         const rowIndex = rows.findIndex(row => parseInt(row[0]) === id);
         if (rowIndex > 0) {
             await sheets.spreadsheets.values.clear({
-                auth: client,
                 spreadsheetId,
-                range: `Sheet1!A${rowIndex + 2}:G${rowIndex + 2}`,
+                range: `Sheet1!A${rowIndex + 1}:G${rowIndex + 1}`,
             });
             res.json({ success: true });
         } else {
@@ -218,5 +207,9 @@ app.delete('/api/products/:id', async (req, res) => {
     }
 });
 
-// Export for Vercel
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
 module.exports = app;
