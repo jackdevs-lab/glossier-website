@@ -11,7 +11,7 @@ app.use(express.static('public'));
 
 // Google Sheets configuration
 const spreadsheetId = '1L6hYMNd6jyWfR5FGAC8hWmJ78B_4jLtXATwqInHzE4c';
-
+require('dotenv').config();
 async function initializeClient() {
     try {
         const auth = new google.auth.GoogleAuth({
@@ -26,7 +26,6 @@ async function initializeClient() {
         throw error;
     }
 }
-
 console.log('Server starting...');
 app.use((req, res, next) => {
     console.log(`Request: ${req.method} ${req.url}`);
@@ -153,10 +152,10 @@ app.put('/api/products/:id', async (req, res) => {
         });
         const rows = response.data.values || [];
         const rowIndex = rows.findIndex(row => parseInt(row[0]) === id);
-        if (rowIndex > 0) {
+        if (rowIndex > 0) { // Adjust for 0-based index after slicing
             await sheets.spreadsheets.values.update({
                 spreadsheetId,
-                range: `Sheet1!A${rowIndex + 1}:G${rowIndex + 1}`,
+                range: `Sheet1!A${rowIndex + 2}:G${rowIndex + 2}`, // +2 because slice(1) skips header
                 valueInputOption: 'RAW',
                 resource: {
                     values: [[
@@ -178,6 +177,32 @@ app.put('/api/products/:id', async (req, res) => {
     } catch (error) {
         console.error('Error updating product:', error);
         res.status(500).json({ success: false, error: 'Failed to update product', details: error.message });
+    }
+});
+
+app.delete('/api/products/:id', async (req, res) => {
+    try {
+        const client = await initializeClient();
+        const sheets = google.sheets({ version: 'v4', auth: client });
+        const id = parseInt(req.params.id);
+        const response = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: 'Sheet1!A:G',
+        });
+        const rows = response.data.values || [];
+        const rowIndex = rows.findIndex(row => parseInt(row[0]) === id);
+        if (rowIndex > 0) {
+            await sheets.spreadsheets.values.clear({
+                spreadsheetId,
+                range: `Sheet1!A${rowIndex + 2}:G${rowIndex + 2}`, // +2 because slice(1) skips header
+            });
+            res.json({ success: true });
+        } else {
+            res.status(404).json({ success: false, error: 'Product not found' });
+        }
+    } catch (error) {
+        console.error('Error deleting product:', error);
+        res.status(500).json({ success: false, error: 'Failed to delete product', details: error.message });
     }
 });
 
