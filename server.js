@@ -11,11 +11,13 @@ app.use(express.static('public'));
 
 // Google Sheets configuration
 const spreadsheetId = '1L6hYMNd6jyWfR5FGAC8hWmJ78B_4jLtXATwqInHzE4c';
+const { google } = require('googleapis');
 require('dotenv').config();
+
 async function initializeClient() {
     try {
         const auth = new google.auth.GoogleAuth({
-            keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+            credentials: JSON.parse(Buffer.from(process.env.SERVICE_ACCOUNT_KEY_BASE64, 'base64').toString()),
             scopes: ['https://www.googleapis.com/auth/spreadsheets'],
         });
         const client = await auth.getClient();
