@@ -1,4 +1,7 @@
 // /js/products.js
+const API_BASE_URL = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:3000'
+  : 'https://glossier-website.vercel.app';
 async function getProductsByCategory(category) {
     try {
         const response = await fetch(`http://localhost:3000/api/products/${category}`);
