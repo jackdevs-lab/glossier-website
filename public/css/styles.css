@@ -14,15 +14,6 @@ body {
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
-/* Modal animation */
-@keyframes slideIn {
-    from { transform: translateX(100%); }
-    to { transform: translateX(0); }
-}
-
-#cart-modal[data-open="true"] > div {
-    animation: slideIn 0.3s ease-out;
-}
 /* Mobile-first base styles */
 #menu {
     display: none; /* Hidden by default, toggled by JavaScript */
@@ -65,81 +56,7 @@ body {
         max-width: 32rem; /* Even larger on large screens */
     }
 }
-/* Ensure smooth transitions for modals */
-#cart-modal,
-#nav-panel {
-    transition: opacity 0.3s ease-in-out;
-}
 
-#cart-modal .absolute,
-#nav-panel .absolute {
-    transition: transform 0.3s ease-in-out;
-}
-
-/* Open state adjustments */
-#cart-modal[data-open="true"] .absolute {
-    transform: translateX(0);
-}
-
-#cart-modal[data-open="false"] .absolute {
-    transform: translateX(100%);
-}
-
-#nav-panel[data-open="true"] .absolute {
-    transform: translateX(0);
-}
-
-#nav-panel[data-open="false"] .absolute {
-    transform: -translateX(100%);
-}
-
-/* Styling refinements */
-#nav-panel .absolute,
-#cart-modal .absolute {
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-#nav-items a {
-    font-size: 1.125rem;
-    transition: color 0.2s ease;
-}
-
-#nav-items a:hover {
-    color: #8B5E3C;
-}
-
-#nav-sentence {
-    font-size: 1.125rem;
-    line-height: 1.5;
-    padding-top: 1rem;
-    border-top: 1px solid #5C4033;
-    border-top-opacity: 0.2;
-}
-
-/* Ensure z-index hierarchy */
-#nav-panel {
-    z-index: 60;
-}
-
-#cart-modal {
-    z-index: 50;
-}
-
-/* Responsive adjustments */
-@media (max-width: 767px) {
-    #nav-panel .absolute,
-    #cart-modal .absolute {
-        width: 100%;
-    }
-}
-
-@media (min-width: 768px) {
-    #nav-panel .absolute,
-    #cart-modal .absolute {
-        width: 33.333333%;
-    }
-}
 /* Ensure product card images scale properly */
 .product-card img {
     width: 100%;
@@ -162,9 +79,78 @@ body {
     flex-grow: 0;
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments for product cards */
 @media (max-width: 767px) {
     .product-card img {
         max-height: 150px; /* Slightly smaller max height on mobile for better fit */
     }
+}
+
+/* Modal styles for cart and navigation */
+#cart-modal, #nav-modal {
+    transition: opacity 0.3s ease-in-out;
+}
+
+#cart-modal.hidden, #nav-modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+    display: none;
+}
+
+#cart-modal:not(.hidden), #nav-modal:not(.hidden) {
+    opacity: 1;
+    pointer-events: auto;
+    display: block;
+}
+
+#cart-modal .transform, #nav-modal .transform {
+    transition: transform 0.3s ease-in-out;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#cart-modal:not(.hidden) .transform {
+    transform: translateX(0);
+}
+
+#cart-modal.hidden .transform {
+    transform: translateX(100%);
+}
+
+#nav-modal:not(.hidden) .transform {
+    transform: translateX(0);
+}
+
+#nav-modal.hidden .transform {
+    transform: translateX(-100%);
+}
+
+@media (max-width: 767px) {
+    #cart-modal .transform, #nav-modal .transform {
+        width: 100%;
+    }
+}
+
+@media (min-width: 768px) {
+    #cart-modal .transform, #nav-modal .transform {
+        width: 33.333333%;
+    }
+}
+
+#nav-items a {
+    font-size: 1.125rem;
+    transition: color 0.2s ease;
+}
+
+#nav-items a:hover {
+    color: #8B5E3C;
+}
+
+/* Ensure z-index hierarchy */
+#cart-modal {
+    z-index: 50;
+}
+
+#nav-modal {
+    z-index: 60;
 }

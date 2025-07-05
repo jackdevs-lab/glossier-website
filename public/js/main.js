@@ -1,189 +1,114 @@
-// /js/main.js
-// DOM Elements
-const cartIcon = document.getElementById('cart-icon');
-const cartModal = document.getElementById('cart-modal');
-const closeCart = document.getElementById('close-cart');
-const checkoutBtn = document.getElementById('checkout-btn');
-const navTrigger = document.getElementById('nav-trigger');
-const navPanel = document.getElementById('nav-panel');
-const closeNav = document.getElementById('close-nav');
-const navItems = document.getElementById('nav-items');
-const navSentence = document.getElementById('nav-sentence');
-const navLinks = document.querySelectorAll('.nav-link');
-const mobileMenu = document.getElementById('mobile-menu');
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded at', new Date().toISOString());
 
-// Toggle cart modal
-function toggleCartModal() {
-    const isOpen = cartModal.getAttribute('data-open') === 'true';
-    console.log('Toggling cart modal, isOpen:', isOpen);
-    if (isOpen) {
-        cartModal.setAttribute('data-open', 'false');
-        cartModal.classList.add('hidden');
-    } else {
-        cartModal.setAttribute('data-open', 'true');
-        cartModal.classList.remove('hidden');
-        cart.renderCart();
-    }
-}
+    // DOM Elements
+    const cartIcon = document.getElementById('cart-icon');
+    const closeCart = document.getElementById('close-cart');
+    const cartModal = document.getElementById('cart-modal');
+    const navTrigger = document.getElementById('nav-trigger');
+    const closeNav = document.getElementById('close-nav');
+    const navModal = document.getElementById('nav-modal');
 
-// Toggle navigation panel and mobile menu
-function toggleNavPanel() {
-    const isOpen = navPanel.getAttribute('data-open') === 'true';
-    console.log('Toggling nav panel, isOpen:', isOpen);
-    if (isOpen) {
-        navPanel.setAttribute('data-open', 'false');
-        navPanel.classList.add('hidden');
-        // Revert to list view when closing
-        navItems.classList.remove('hidden');
-        navSentence.classList.add('hidden');
-        // Hide mobile menu on mobile
-        if (window.innerWidth < 768 && mobileMenu) {
-            mobileMenu.classList.add('hidden');
+    // Toggle Cart Modal
+    function toggleCartModal() {
+        if (!cartModal) {
+            console.error('Cart modal not found');
+            return;
         }
-    } else {
-        navPanel.setAttribute('data-open', 'true');
-        navPanel.classList.remove('hidden');
-        // Show list view initially
-        navItems.classList.remove('hidden');
-        navSentence.classList.add('hidden');
-        // Show mobile menu on mobile
-        if (window.innerWidth < 768 && mobileMenu) {
-            mobileMenu.classList.remove('hidden');
+        console.log('Toggling cart modal');
+        if (cartModal.classList.contains('hidden')) {
+            cartModal.classList.remove('hidden');
+            cartModal.querySelector('.transform').classList.remove('translate-x-full');
+            if (typeof cart !== 'undefined' && typeof cart.renderCart === 'function') {
+                console.log('Rendering cart');
+                cart.renderCart();
+            } else {
+                console.error('Cart object or renderCart method not defined');
+            }
+        } else {
+            cartModal.classList.add('hidden');
+            cartModal.querySelector('.transform').classList.add('translate-x-full');
         }
     }
-}
 
-document.querySelectorAll('.faq-question').forEach(question => {
-    question.addEventListener('click', () => {
-        const answer = question.nextElementSibling;
-        const icon = question.querySelector('i');
-        const isActive = answer.classList.contains('active');
-
-        // Close all other answers
-        document.querySelectorAll('.faq-answer').forEach(ans => {
-            ans.classList.remove('active');
-        });
-        document.querySelectorAll('.faq-question i').forEach(ic => {
-            ic.classList.remove('active');
-        });
-
-        // Toggle the clicked answer
-        if (!isActive) {
-            answer.classList.add('active');
-            icon.classList.add('active');
+    // Toggle Navigation Modal
+    function toggleNavModal() {
+        if (!navModal) {
+            console.error('Nav modal not found');
+            return;
         }
-    });
-});
+        console.log('Toggling nav modal');
+        if (navModal.classList.contains('hidden')) {
+            navModal.classList.remove('hidden');
+            navModal.querySelector('.transform').classList.remove('-translate-x-full');
+        } else {
+            navModal.classList.add('hidden');
+            navModal.querySelector('.transform').classList.add('-translate-x-full');
+        }
+    }
 
-// Convert list to sentence on link click (optional feature, not triggered by default)
-function updateSentenceView() {
-    const links = Array.from(navLinks).map(link => link.textContent);
-    const sentence = `Explore our collections: ${links.join(', ')}.`;
-    navSentence.textContent = sentence;
-    navItems.classList.add('hidden');
-    navSentence.classList.remove('hidden');
-}
-
-// Event listeners
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM fully loaded');
-
-    // Cart modal event listeners
+    // Attach Event Listeners
     if (cartIcon) {
         console.log('Cart icon found');
-        cartIcon.addEventListener('click', toggleCartModal);
+        cartIcon.addEventListener('click', () => {
+            console.log('Cart button clicked - debugging click event');
+            toggleCartModal();
+        });
     } else {
-        console.log('Cart icon not found');
-    }
-    if (closeCart) {
-        console.log('Close cart button found');
-        closeCart.addEventListener('click', toggleCartModal);
-    } else {
-        console.log('Close cart button not found');
+        console.error('Cart icon (#cart-icon) not found');
     }
 
-    // Close modal when clicking outside
+    if (closeCart) {
+        console.log('Close cart button found');
+        closeCart.addEventListener('click', () => {
+            console.log('Close cart button clicked');
+            toggleCartModal();
+        });
+    } else {
+        console.error('Close cart button (#close-cart) not found');
+    }
+
     if (cartModal) {
         console.log('Cart modal found');
-        cartModal.addEventListener('click', function(e) {
+        cartModal.addEventListener('click', (e) => {
             if (e.target === cartModal) {
+                console.log('Cart modal background clicked');
                 toggleCartModal();
             }
         });
     } else {
-        console.log('Cart modal not found');
+        console.error('Cart modal (#cart-modal) not found');
     }
 
-    // Navigation panel event listeners
     if (navTrigger) {
-        console.log('Nav trigger (search icon) found');
-        navTrigger.addEventListener('click', toggleNavPanel);
+        console.log('Nav trigger found');
+        navTrigger.addEventListener('click', () => {
+            console.log('Nav trigger clicked - debugging click event');
+            toggleNavModal();
+        });
     } else {
-        console.log('Nav trigger not found');
+        console.error('Nav trigger (#nav-trigger) not found');
     }
+
     if (closeNav) {
         console.log('Close nav button found');
-        closeNav.addEventListener('click', toggleNavPanel);
+        closeNav.addEventListener('click', () => {
+            console.log('Close nav button clicked');
+            toggleNavModal();
+        });
     } else {
-        console.log('Close nav button not found');
+        console.error('Close nav button (#close-nav) not found');
     }
 
-    // Navigate to link on click (removed preventDefault and updateSentenceView)
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            // No preventDefault() to allow navigation
-            // Close the nav panel after navigation
-            if (navPanel) {
-                navPanel.setAttribute('data-open', 'false');
-                navPanel.classList.add('hidden');
-                if (window.innerWidth < 768 && mobileMenu) {
-                    mobileMenu.classList.add('hidden');
-                }
-            }
-        });
-    });
-
-    // Close nav panel when clicking outside
-    if (navPanel) {
-        console.log('Nav panel found');
-        navPanel.addEventListener('click', function(e) {
-            if (e.target === navPanel) {
-                toggleNavPanel();
+    if (navModal) {
+        console.log('Nav modal found');
+        navModal.addEventListener('click', (e) => {
+            if (e.target === navModal) {
+                console.log('Nav modal background clicked');
+                toggleNavModal();
             }
         });
     } else {
-        console.log('Nav panel not found');
-    }
-
-    // Category and sorting logic
-    const path = window.location.pathname;
-    const category = path.split('/').pop().replace('.html', '');
-    
-    if (['skincare', 'makeup', 'wigs', 'handbags', 'perfumes', 'lingeries'].includes(category)) {
-        console.log(`Rendering category page for: ${category}`);
-        renderProductGrid(category, 'product-grid'); // Initial render
-        const sortSelect = document.getElementById('sort');
-        if (sortSelect) {
-            sortSelect.addEventListener('change', async function() {
-                const sortValue = this.value;
-                let products = await getProductsByCategory(category);
-                switch(sortValue) {
-                    case 'price-asc':
-                        products.sort((a, b) => a.price - b.price);
-                        break;
-                    case 'price-desc':
-                        products.sort((a, b) => b.price - a.price);
-                        break;
-                    case 'name-asc':
-                        products.sort((a, b) => a.name.localeCompare(b.name));
-                        break;
-                    default:
-                        break;
-                }
-                renderProductGrid(category, 'product-grid', products); // Render with sorted products
-            });
-        }
-    } else if (category === 'products') {
-        renderProductList('product-list'); // Initial render for products page
+        console.error('Nav modal (#nav-modal) not found');
     }
 });

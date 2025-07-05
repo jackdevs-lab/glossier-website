@@ -1,12 +1,1 @@
-node_modules/
-glossier-service-account-key.json
-public/css/output.css
 .env
-*.log
-.idea/
-.vscode/
-*.swp
-*.swo
-*.DS_Store
-.vercel/
-.vercel

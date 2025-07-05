@@ -6,7 +6,7 @@
     "build-css": "tailwindcss -i ./src/input.css -o ./public/css/output.css",
     "watch-css": "tailwindcss -i ./src/input.css -o ./public/css/output.css --watch",
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "vercel dev"
   },
   "main": "server.js",
   "dependencies": {

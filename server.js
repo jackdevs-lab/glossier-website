@@ -3,6 +3,7 @@ const { google } = require('googleapis');
 const cors = require('cors');
 const sanitizeHtml = require('sanitize-html');
 const app = express();
+const path = require('path');
 
 // Middleware
 app.use(cors());
@@ -11,7 +12,6 @@ app.use(express.static('public'));
 
 // Google Sheets configuration
 const spreadsheetId = '1L6hYMNd6jyWfR5FGAC8hWmJ78B_4jLtXATwqInHzE4c';
-const { google } = require('googleapis');
 require('dotenv').config();
 
 async function initializeClient() {
@@ -40,7 +40,7 @@ app.get('/api/products', async (req, res) => {
         const sheets = google.sheets({ version: 'v4', auth: client });
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId,
-            range: 'Sheet1!A:G',
+            range: 'Sheet1!A:G', // Confirm this matches your sheet name
         });
         const rows = response.data.values || [];
         if (rows.length <= 1) {
@@ -65,15 +65,20 @@ app.get('/api/products', async (req, res) => {
 });
 
 app.get('/api/products/:category', async (req, res) => {
+    console.log(`Handling request for /api/products/${req.params.category}`);
     try {
         const client = await initializeClient();
         const sheets = google.sheets({ version: 'v4', auth: client });
         const category = sanitizeHtml(req.params.category);
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId,
-            range: 'Sheet1!A:G',
+            range: 'Sheet1!A:G', // Confirm this matches your sheet name
         });
         const rows = response.data.values || [];
+        if (rows.length <= 1) {
+            console.log('No product data found in the sheet.');
+            return res.json([]);
+        }
         const products = rows.slice(1).map(row => ({
             id: parseInt(row[0]) || Date.now(),
             name: row[1] || 'Unnamed',
@@ -83,10 +88,11 @@ app.get('/api/products/:category', async (req, res) => {
             category: row[5] || 'uncategorized',
             inStock: row[6] === 'TRUE',
         })).filter(product => product.category.toLowerCase() === category.toLowerCase());
+        console.log(`Filtered products for ${category}:`, products);
         res.json(products);
     } catch (error) {
-        console.error('Error fetching products:', error);
-        res.status(500).json({ success: false, error: 'Failed to fetch products' });
+        console.error('Error in /api/products/:category:', error);
+        res.status(500).json({ success: false, error: 'Failed to fetch products', details: error.message });
     }
 });
 
@@ -208,34 +214,15 @@ app.delete('/api/products/:id', async (req, res) => {
     }
 });
 
-app.delete('/api/products/:id', async (req, res) => {
-    try {
-        const client = await initializeClient();
-        const sheets = google.sheets({ version: 'v4', auth: client });
-        const id = parseInt(req.params.id);
-        const response = await sheets.spreadsheets.values.get({
-            spreadsheetId,
-            range: 'Sheet1!A:G',
-        });
-        const rows = response.data.values || [];
-        const rowIndex = rows.findIndex(row => parseInt(row[0]) === id);
-        if (rowIndex > 0) {
-            await sheets.spreadsheets.values.clear({
-                spreadsheetId,
-                range: `Sheet1!A${rowIndex + 1}:G${rowIndex + 1}`,
-            });
-            res.json({ success: true });
-        } else {
-            res.status(404).json({ success: false, error: 'Product not found' });
-        }
-    } catch (error) {
-        console.error('Error deleting product:', error);
-        res.status(500).json({ success: false, error: 'Failed to delete product', details: error.message });
+// Adjusted catch-all to exclude API routes
+app.get('*', (req, res) => {
+    if (!req.url.startsWith('/api')) {
+        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    } else {
+        res.status(404).json({ success: false, error: 'API route not found' });
     }
 });
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
